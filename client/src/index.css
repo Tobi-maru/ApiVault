@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian-bg: #1e1e1e;
+  --color-obsidian-accent: #a855f7;
+  --color-obsidian-text: #e5e7eb;
+}
+
+body {
+  background-color: var(--color-obsidian-bg);
+  color: var(--color-obsidian-text);
+}
