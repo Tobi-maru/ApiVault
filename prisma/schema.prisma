@@ -12,6 +12,7 @@ datasource db {
 
 model ApiKey {
   id           String   @id @default(cuid())
+  userId       String
   service      String
   projectName  String
   modelName    String?
