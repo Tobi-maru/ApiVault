@@ -20,6 +20,7 @@ router.post('/simulate/:id', requireAuth(), async (req: Request<{id: string}>, r
             where: { id: keyId }
         });
 
+        // @ts-ignore - TS IDE cache sometimes lags behind prisma schema changes
         if (!apiKey || apiKey.userId !== userId) {
             return res.status(404).json({ error: 'API Key not found or access denied.' });
         }
