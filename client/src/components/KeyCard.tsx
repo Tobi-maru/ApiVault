@@ -33,7 +33,7 @@ export default function KeyCard({ keyData, onDelete, onUpdateUsage }: KeyCardPro
         try {
             setIsSimulating(true);
             const token = await getToken();
-            const res = await fetch(`http://localhost:3001/api/proxy/simulate/${keyData.id}`, {
+            const res = await fetch(`/api/proxy/simulate/${keyData.id}`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}` }
             });

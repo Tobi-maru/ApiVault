@@ -7,7 +7,7 @@
         "dev": "concurrently \"bun run dev:server\" \"bun run dev:client\"",
         "dev:server": "tsx watch src/index.ts",
         "dev:client": "cd client && bun run dev",
-        "build": "bunx prisma generate && bunx prisma migrate deploy && tsc && cd client && bun install && bun run build",
+        "build": "bunx prisma generate && bunx prisma migrate deploy && bunx tsc && cd client && bun install && bun run build",
         "start": "node dist/index.js",
         "prisma:studio": "npx prisma studio"
     },
