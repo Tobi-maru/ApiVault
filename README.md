@@ -1,99 +1,116 @@
-# API Vault 🔐
+# API Vault
 
-API Vault is a secure, full-stack application designed to help developers centralize, manage, and monitor their API keys. It features robust user authentication, usage limit tracking, and a sleek, dark-themed user interface to keep your credentials perfectly organized.
+API Vault is a full-stack app for storing API keys, tracking usage against spending limits, and testing a simulated proxy flow behind Clerk authentication.
 
-## ✨ Features
+## Stack
 
-- **Secure Authentication:** Complete login and user management powered by [Clerk](https://clerk.dev/). Note: Users only have access to their own keys.
-- **Key Management:** Add, delete, block, and filter API keys based on the service name, project name, or machine learning model.
-- **Usage Tracking & Limits:** Specify spending limits for your keys. The intuitive dashboard displays visual progress bars to track current usage safely.
-- **API Simulation:** Built-in proxy endpoint to test keys and increment usage numbers seamlessly.
-- **Security-first UI:** Keys are masked by default to prevent shoulder-surfing, with single-click copy-to-clipboard functionality.
+- React 19 + Vite in `web/`
+- Express + Prisma in `server/`
+- Vercel serverless entry in `api/`
+- PostgreSQL via `DATABASE_URL`
+- Clerk for auth
 
-## 🛠️ Tech Stack
+## Layout
 
-**Frontend:**
-- React (Vite)
-- Tailwind CSS
-- Lucide React (Icons)
-- Clerk (`@clerk/clerk-react`, `@clerk/themes`)
-
-**Backend:**
-- Node.js & Express
-- Prisma ORM (SQLite for local development)
-- Clerk Middleware (`@clerk/express`)
-- Bun (Package Manager & Runner)
-
-##  Getting Started
-
-### Prerequisites
-- [Bun](https://bun.sh/) installed on your machine.
-- A free [Clerk](https://clerk.com/) account for authentication keys.
-
-### 1. Clone & Install Dependencies
-First, clone the repository and install the required packages:
-
-```bash
-# Install root (backend) dependencies
-bun install
-
-# Install client (frontend) dependencies
-cd client
-bun install
-cd ..
+```text
+├── api/                    # Vercel function entrypoints
+├── prisma/                 # Prisma schema and migrations
+├── server/                 # Express app, routes, and Prisma client
+│   ├── app.ts              # Shared app for local server + Vercel
+│   ├── db.ts               # Prisma client singleton
+│   ├── index.ts            # Local dev server entrypoint
+│   ├── lib/                # Request parsing and validation helpers
+│   └── routes/             # API routes
+├── web/                    # Vite frontend workspace
+│   ├── src/
+│   │   ├── components/     # UI components
+│   │   ├── lib/            # Frontend API helpers
+│   │   └── types/          # Shared frontend types
+│   └── vite.config.ts      # Builds static output into /public
+└── package.json            # Root scripts and workspace config
 ```
 
-### 2. Environment Variables
-You will need to configure environmental variables for both the backend and frontend.
+## Environment
 
-**Backend (`/.env`):**
-Create a `.env` file in the root directory:
+Root `.env`:
+
 ```env
 PORT=3001
+DATABASE_URL=postgresql://...
 CLERK_SECRET_KEY=sk_test_...
-CLERK_PUBLISHABLE_KEY=pk_test_...
+CORS_ORIGIN=http://localhost:5173
 ```
 
-**Frontend (`/client/.env.local`):**
-Create a `.env.local` file in the `client/` directory:
+`web/.env.local`:
+
 ```env
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
-*(Retrieve these keys from your Clerk Dashboard under **API Keys**).*
 
-### 3. Database Setup
-Push the predefined schema to your newly created local SQLite database:
+For Vercel, add the same variables in the project settings. `VITE_CLERK_PUBLISHABLE_KEY` must be exposed to the frontend build. `CORS_ORIGIN` is optional on Vercel if the web app and API are served from the same domain.
+
+## Install
 
 ```bash
-bunx prisma db push
+bun install
+```
+
+The repo uses a Bun workspace, so the root install covers both the server and the frontend.
+
+## Database
+
+Local development expects PostgreSQL, not SQLite.
+
+Common commands:
+
+```bash
+bunx prisma migrate dev
 bunx prisma generate
 ```
 
-### 4. Run the Application
-You can run both the frontend and backend concurrently using the dev script:
+Production migrations are intentionally separate from the build:
+
+```bash
+bun run migrate:deploy
+```
+
+## Development
 
 ```bash
 bun run dev
 ```
 
-- **Frontend:** http://localhost:5173
-- **Backend:** http://localhost:3001
+- Web: `http://localhost:5173`
+- API: `http://localhost:3001`
 
-## 📁 Project Structure
+## Build
 
-```text
-├── client/                # React (Vite) frontend
-│   ├── src/
-│   │   ├── components/    # Reusable UI components (Modals, KeyCards)
-│   │   ├── App.tsx        # Main application logic & state
-│   │   └── main.tsx       # Entry point & Clerk provider setup
-├── prisma/                # Prisma ORM schema & SQLite database
-├── src/                   # Node.js Express backend
-│   ├── routes/            # API endpoints (keys, proxy)
-│   ├── db.ts              # Prisma client initialization
-│   └── index.ts           # Server entry point & middleware setup
-└── package.json           # Workspace configurations
+```bash
+bun run build
 ```
 
-## 📜 License
-This project is open-source and available under the [MIT License](LICENSE).
+This produces:
+
+- `dist/` for the Node server build
+- `public/` for the Vercel-served frontend bundle
+
+## Vercel
+
+The repo is structured for a single Vercel project:
+
+- static frontend assets are built into `public/`
+- API requests are rewritten to `api/index.ts`
+- SPA routes rewrite to `/index.html`
+
+Recommended Vercel environment variables:
+
+- `DATABASE_URL`
+- `CLERK_SECRET_KEY`
+- `VITE_CLERK_PUBLISHABLE_KEY`
+- `CORS_ORIGIN` if you serve the frontend from a separate origin
+
+## Notes
+
+- API key create/update payloads are now validated server-side.
+- `usageLimit=0` is treated as a real limit instead of being silently ignored.
+- Database migration is no longer coupled to the build step.

@@ -16,18 +16,12 @@ router.post('/simulate/:id', requireAuth(), async (req: Request<{id: string}>, r
         }
 
         // 1. Fetch the user's stored API Key securely
-        const apiKey = await prisma.apiKey.findUnique({
-            where: { id: keyId }
+        const apiKey = await prisma.apiKey.findFirst({
+            where: { id: keyId, userId }
         });
 
-        // @ts-ignore - TS IDE cache sometimes lags behind prisma schema changes
-        if (!apiKey || apiKey.userId !== userId) {
+        if (!apiKey) {
             return res.status(404).json({ error: 'API Key not found or access denied.' });
-        }
-
-        // 2. Check if usage limit is reached
-        if (apiKey.usageLimit && apiKey.currentUsage >= apiKey.usageLimit) {
-            return res.status(403).json({ error: 'Usage limit reached for this API key.' });
         }
 
         // --- SIMULATED EXTERNAL API REQUEST ---
@@ -43,6 +37,10 @@ router.post('/simulate/:id', requireAuth(), async (req: Request<{id: string}>, r
 
         // 3. Update the tracked usage in the database
         const newUsage = parseFloat((apiKey.currentUsage + simCost).toFixed(2));
+
+        if (apiKey.usageLimit !== null && newUsage > apiKey.usageLimit) {
+            return res.status(403).json({ error: 'Usage limit reached for this API key.' });
+        }
         
         const updatedKey = await prisma.apiKey.update({
             where: { id: keyId },

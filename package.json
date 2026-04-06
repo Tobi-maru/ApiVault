@@ -1,15 +1,22 @@
 {
-    "name": "api-vault-backend",
+    "name": "api-vault",
     "private": true,
     "version": "1.0.0",
     "type": "module",
+    "workspaces": [
+        "web"
+    ],
     "scripts": {
-        "dev": "concurrently \"bun run dev:server\" \"bun run dev:client\"",
-        "dev:server": "tsx watch src/index.ts",
-        "dev:client": "cd client && bun run dev",
-        "build": "bunx prisma generate && bunx prisma migrate deploy && bunx tsc && cd client && bun install && bun run build && cd .. && rm -rf public && cp -r client/dist public",
+        "dev": "concurrently \"bun run dev:server\" \"bun run dev:web\"",
+        "dev:server": "tsx watch server/index.ts",
+        "dev:web": "bun run --cwd web dev",
+        "clean": "rm -rf dist public",
+        "build": "bun run clean && bun run build:server && bun run build:web",
+        "build:server": "bunx prisma generate && bunx tsc -p tsconfig.json",
+        "build:web": "bun run --cwd web build",
         "start": "node dist/index.js",
-        "prisma:studio": "npx prisma studio"
+        "migrate:deploy": "bunx prisma migrate deploy",
+        "prisma:studio": "bunx prisma studio"
     },
     "dependencies": {
         "@clerk/express": "^2.0.7",

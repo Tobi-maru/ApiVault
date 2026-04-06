@@ -1,6 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { requireAuth, getAuth } from '@clerk/express';
 import prisma from '../db.js';
+import {
+    parseCreateApiKeyInput,
+    parseUpdateApiKeyInput,
+    PayloadValidationError,
+} from '../lib/api-key-payload.js';
 
 const router = Router();
 
@@ -30,20 +35,24 @@ router.post('/', async (req: Request, res: Response) => {
         const { userId } = getAuth(req);
         if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-        const data = req.body;
+        const data = parseCreateApiKeyInput(req.body);
         const newKey = await prisma.apiKey.create({
             data: {
                 userId,
                 service: data.service,
                 projectName: data.projectName,
-                modelName: data.modelName || null,
+                modelName: data.modelName,
                 key: data.key,
-                usageLimit: data.usageLimit || null,
+                usageLimit: data.usageLimit,
                 currentUsage: 0,
             },
         });
         res.status(201).json(newKey);
     } catch (error) {
+        if (error instanceof PayloadValidationError) {
+            return res.status(400).json({ error: error.message });
+        }
+
         console.error('Failed to create key:', error);
         res.status(500).json({ error: 'Failed to create key' });
     }
@@ -55,20 +64,24 @@ router.put('/:id', async (req: Request<{ id: string }>, res: Response) => {
         const { userId } = getAuth(req);
         if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-        const data = req.body;
-        
-        // Ensure user owns the key
-        const existingKey = await prisma.apiKey.findUnique({ where: { id: req.params.id } });
-        if (!existingKey || existingKey.userId !== userId) {
+        const existingKey = await prisma.apiKey.findFirst({
+            where: { id: req.params.id, userId },
+        });
+        if (!existingKey) {
             return res.status(404).json({ error: 'Key not found' });
         }
 
+        const data = parseUpdateApiKeyInput(req.body);
         const updatedKey = await prisma.apiKey.update({
             where: { id: req.params.id },
             data,
         });
         res.json(updatedKey);
     } catch (error) {
+        if (error instanceof PayloadValidationError) {
+            return res.status(400).json({ error: error.message });
+        }
+
         console.error('Failed to update key:', error);
         res.status(500).json({ error: 'Failed to update key' });
     }
@@ -79,10 +92,11 @@ router.delete('/:id', async (req: Request<{ id: string }>, res: Response) => {
     try {
         const { userId } = getAuth(req);
         if (!userId) return res.status(401).json({ error: 'Unauthorized' });
-        
-        // Ensure user owns the key
-        const existingKey = await prisma.apiKey.findUnique({ where: { id: req.params.id } });
-        if (!existingKey || existingKey.userId !== userId) {
+
+        const existingKey = await prisma.apiKey.findFirst({
+            where: { id: req.params.id, userId },
+        });
+        if (!existingKey) {
             return res.status(404).json({ error: 'Key not found' });
         }
 
