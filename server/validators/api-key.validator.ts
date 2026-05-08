@@ -72,7 +72,7 @@ export function parseCreateApiKeyInput(payload: unknown): ApiKeyWriteInput {
     return {
         service: parseRequiredString(record, 'service', 'Service name'),
         projectName: parseRequiredString(record, 'projectName', 'Project name'),
-        modelName: parseOptionalString(record, 'modelName', 'Model name'),
+        environment: parseOptionalString(record, 'environment', 'Environment'),
         key: parseRequiredString(record, 'key', 'API key'),
         usageLimit: parseOptionalNumber(record, 'usageLimit', 'Usage limit'),
     };
@@ -88,8 +88,8 @@ export function parseUpdateApiKeyInput(payload: unknown): Partial<ApiKeyWriteInp
     if ('projectName' in record) {
         data.projectName = parseRequiredString(record, 'projectName', 'Project name');
     }
-    if ('modelName' in record) {
-        data.modelName = parseOptionalString(record, 'modelName', 'Model name');
+    if ('environment' in record) {
+        data.environment = parseOptionalString(record, 'environment', 'Environment');
     }
     if ('key' in record) {
         data.key = parseRequiredString(record, 'key', 'API key');

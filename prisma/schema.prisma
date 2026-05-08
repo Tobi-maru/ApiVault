@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,7 +12,7 @@ model ApiKey {
   userId       String
   service      String
   projectName  String
-  modelName    String?
+  environment  String?
   key          String
   currentUsage Float    @default(0)
   usageLimit   Float?

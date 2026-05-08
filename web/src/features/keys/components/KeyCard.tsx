@@ -73,8 +73,8 @@ export default function KeyCard({
                 <div>
                     <h3 className="text-xl font-bold text-obsidian-accent">{keyData.service}</h3>
                     <p className="text-xs text-gray-400">{keyData.projectName}</p>
-                    {keyData.modelName ? (
-                        <p className="mt-1 text-xs text-gray-500">Model: {keyData.modelName}</p>
+                    {keyData.environment ? (
+                        <p className="mt-1 text-xs text-gray-500">Environment: {keyData.environment}</p>
                     ) : null}
                 </div>
                 <button

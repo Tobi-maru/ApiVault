@@ -3,7 +3,7 @@ export type ApiKey = {
     userId: string;
     service: string;
     projectName: string;
-    modelName: string | null;
+    environment: string | null;
     key: string;
     currentUsage: number;
     usageLimit: number | null;
@@ -14,7 +14,7 @@ export type ApiKey = {
 export type CreateApiKeyPayload = {
     service: string;
     projectName: string;
-    modelName?: string;
+    environment?: string;
     usageLimit?: number;
     key: string;
 };

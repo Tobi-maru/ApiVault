@@ -50,7 +50,7 @@ export default function KeysHeader({
                 <input
                     className="w-full rounded-xl border border-gray-700/50 bg-black/40 py-3 pr-4 pl-10 text-white transition-all placeholder:text-gray-600 focus:border-obsidian-accent focus:ring-1 focus:ring-obsidian-accent focus:outline-none"
                     onChange={(event) => onSearchTermChange(event.target.value)}
-                    placeholder="Search keys by service, project, or model..."
+                    placeholder="Search keys by service, project, or environment..."
                     type="text"
                     value={searchTerm}
                 />

@@ -96,7 +96,7 @@ export default function AddKeyModal({ isOpen, onClose, onSubmit }: AddKeyModalPr
 
         const didSave = await onSubmit({
             key: formState.key,
-            modelName: formState.modelName.trim() || undefined,
+            environment: formState.environment.trim() || undefined,
             projectName: formState.projectName,
             service: formState.service,
             usageLimit: parsedUsageLimit,
@@ -117,7 +117,7 @@ export default function AddKeyModal({ isOpen, onClose, onSubmit }: AddKeyModalPr
                         id="service"
                         label="Service Name *"
                         onChange={handleChange}
-                        placeholder="e.g., OpenAI"
+                        placeholder="e.g., Stripe, SendGrid, Twilio"
                         required
                         value={formState.service}
                     />
@@ -133,11 +133,11 @@ export default function AddKeyModal({ isOpen, onClose, onSubmit }: AddKeyModalPr
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <FormField
-                        id="modelName"
-                        label="Model Name (Optional)"
+                        id="environment"
+                        label="Environment (Optional)"
                         onChange={handleChange}
-                        placeholder="e.g., GPT-4"
-                        value={formState.modelName}
+                        placeholder="e.g., Production, Staging"
+                        value={formState.environment}
                     />
                     <FormField
                         id="usageLimit"

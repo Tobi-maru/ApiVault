@@ -17,7 +17,7 @@ export async function createApiKey(
             userId,
             service: data.service,
             projectName: data.projectName,
-            modelName: data.modelName,
+            environment: data.environment,
             key: data.key,
             usageLimit: data.usageLimit,
             currentUsage: 0,

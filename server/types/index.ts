@@ -1,7 +1,7 @@
 export type ApiKeyWriteInput = {
     service: string;
     projectName: string;
-    modelName: string | null;
+    environment: string | null;
     key: string;
     usageLimit: number | null;
 };
@@ -11,7 +11,7 @@ export type ApiKeyResponse = {
     userId: string;
     service: string;
     projectName: string;
-    modelName: string | null;
+    environment: string | null;
     key: string;
     currentUsage: number;
     usageLimit: number | null;

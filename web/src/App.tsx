@@ -25,7 +25,7 @@ export default function App() {
         return (
             key.service.toLowerCase().includes(normalizedSearchTerm) ||
             key.projectName.toLowerCase().includes(normalizedSearchTerm) ||
-            key.modelName?.toLowerCase().includes(normalizedSearchTerm)
+            key.environment?.toLowerCase().includes(normalizedSearchTerm)
         );
     });
 
