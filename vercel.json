@@ -1,11 +1,4 @@
 {
-  "installCommand": "bun install",
-  "buildCommand": "bun run build",
-  "functions": {
-    "api/index.ts": {
-      "includeFiles": "dist/**"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
