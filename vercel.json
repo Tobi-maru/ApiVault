@@ -1,12 +1,4 @@
 {
-  "buildCommand": "bun run build",
-  "outputDirectory": "public",
-  "builds": [
-    {
-      "src": "api/index.ts",
-      "use": "@vercel/node"
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
