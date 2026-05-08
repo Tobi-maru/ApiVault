@@ -4,7 +4,8 @@
     "version": "1.0.0",
     "type": "module",
     "workspaces": [
-        "web"
+        "web",
+        "packages/*"
     ],
     "scripts": {
         "dev": "concurrently \"bun run dev:server\" \"bun run dev:web\"",
@@ -16,7 +17,8 @@
         "build:web": "bun run --cwd web build",
         "start": "node dist/index.js",
         "migrate:deploy": "bunx prisma migrate deploy",
-        "prisma:studio": "bunx prisma studio"
+        "prisma:studio": "bunx prisma studio",
+        "typecheck": "tsc --noEmit -p tsconfig.json && bun run --cwd web typecheck"
     },
     "dependencies": {
         "@clerk/express": "^2.0.7",

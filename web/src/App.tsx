@@ -2,12 +2,12 @@ import { useState } from 'react';
 
 import { SignedIn, SignedOut, useAuth } from '@clerk/clerk-react';
 
-import AddKeyModal from './features/keys/components/AddKeyModal';
-import ErrorBanner from './features/keys/components/ErrorBanner';
-import KeysGrid from './features/keys/components/KeysGrid';
-import KeysHeader from './features/keys/components/KeysHeader';
-import SignedOutHero from './features/keys/components/SignedOutHero';
-import { useApiKeys } from './features/keys/hooks/use-api-keys';
+import AddKeyModal from '@/features/keys/components/AddKeyModal';
+import ErrorBanner from '@/features/keys/components/ErrorBanner';
+import KeysGrid from '@/features/keys/components/KeysGrid';
+import KeysHeader from '@/features/keys/components/KeysHeader';
+import SignedOutHero from '@/features/keys/components/SignedOutHero';
+import { useApiKeys } from '@/features/keys/hooks/use-api-keys';
 
 export default function App() {
     const [isAddKeyModalOpen, setIsAddKeyModalOpen] = useState(false);
@@ -21,10 +21,7 @@ export default function App() {
 
     const normalizedSearchTerm = searchTerm.trim().toLowerCase();
     const filteredKeys = keys.filter((key) => {
-        if (!normalizedSearchTerm) {
-            return true;
-        }
-
+        if (!normalizedSearchTerm) return true;
         return (
             key.service.toLowerCase().includes(normalizedSearchTerm) ||
             key.projectName.toLowerCase().includes(normalizedSearchTerm) ||

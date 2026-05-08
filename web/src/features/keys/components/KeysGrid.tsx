@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react';
 
-import type { ApiKey } from '../../../types/api-key';
+import type { ApiKey } from '@/types/api-key';
 import EmptyKeysState from './EmptyKeysState';
 import KeyCard from './KeyCard';
 

@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Activity, Check, Copy, Eye, EyeOff, Loader2, Trash2 } from 'lucide-react';
 
-import { apiRequest } from '../../../lib/api';
-import type { ApiKey } from '../../../types/api-key';
+import { apiRequest } from '@/lib/api';
+import type { ApiKey } from '@/types/api-key';
+import { formatCurrency } from '@/utils/format';
 
 type KeyCardProps = {
     keyData: ApiKey;
@@ -12,15 +13,6 @@ type KeyCardProps = {
     onError: (message: string | null) => void;
     onUpdateUsage: (id: string, newUsage: number) => void;
 };
-
-function formatCurrency(amount: number) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(amount);
-}
 
 export default function KeyCard({
     keyData,
@@ -60,9 +52,7 @@ export default function KeyCard({
             const data = await apiRequest<{ success: boolean; newTotalUsage: number }>(
                 `/proxy/simulate/${keyData.id}`,
                 getToken,
-                {
-                    method: 'POST',
-                },
+                { method: 'POST' },
             );
 
             if (data.success) {

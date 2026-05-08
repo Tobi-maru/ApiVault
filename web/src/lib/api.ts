@@ -8,7 +8,6 @@ function extractErrorMessage(payload: unknown): string | null {
     if (!payload || typeof payload !== 'object') {
         return null;
     }
-
     const maybeError = (payload as { error?: unknown }).error;
     return typeof maybeError === 'string' ? maybeError : null;
 }
@@ -26,7 +25,6 @@ export async function apiRequest<T>(
     }
 
     let body: BodyInit | undefined;
-
     if (options.body !== undefined) {
         headers.set('Content-Type', 'application/json');
         body = JSON.stringify(options.body);

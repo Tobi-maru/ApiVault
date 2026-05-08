@@ -13,21 +13,36 @@ API Vault is a full-stack app for storing API keys, tracking usage against spend
 ## Layout
 
 ```text
-├── api/                    # Vercel function entrypoints
-├── prisma/                 # Prisma schema and migrations
-├── server/                 # Express app, routes, and Prisma client
-│   ├── app.ts              # Shared app for local server + Vercel
-│   ├── db.ts               # Prisma client singleton
-│   ├── index.ts            # Local dev server entrypoint
-│   ├── lib/                # Request parsing and validation helpers
-│   └── routes/             # API routes
-├── web/                    # Vite frontend workspace
-│   ├── src/
-│   │   ├── components/     # UI components
-│   │   ├── lib/            # Frontend API helpers
-│   │   └── types/          # Shared frontend types
-│   └── vite.config.ts      # Builds static output into /public
-└── package.json            # Root scripts and workspace config
+├── api/                        # Vercel function entrypoints
+├── packages/
+│   └── shared/                 # Shared types between frontend and backend
+│       └── src/
+│           └── types/
+│               └── api-key.ts
+├── prisma/                     # Prisma schema and migrations
+├── server/                     # Express app with layered architecture
+│   ├── app.ts                  # Shared app for local server + Vercel
+│   ├── index.ts                # Local dev server entrypoint
+│   ├── config/                 # Environment configuration
+│   ├── controllers/            # HTTP request handlers
+│   ├── middleware/             # Express middleware (error handling, etc.)
+│   ├── routes/                 # API route definitions
+│   ├── services/               # Business logic layer
+│   ├── types/                  # Server-specific types
+│   ├── utils/                  # Utilities (Prisma client, etc.)
+│   └── validators/             # Input validation
+└── web/                        # Vite frontend workspace
+    ├── src/
+    │   ├── components/
+    │   │   └── ui/             # Shared UI components
+    │   ├── features/
+    │   │   └── keys/           # Feature-specific components and hooks
+    │   ├── lib/                # Frontend API helpers
+    │   ├── types/              # Frontend type re-exports
+    │   ├── utils/              # Frontend utilities
+    │   ├── App.tsx
+    │   └── main.tsx
+    └── vite.config.ts          # Builds static output into /public
 ```
 
 ## Environment
@@ -38,6 +53,7 @@ Root `.env`:
 PORT=3001
 DATABASE_URL=postgresql://...
 CLERK_SECRET_KEY=sk_test_...
+CLERK_PUBLISHABLE_KEY=pk_test_...
 CORS_ORIGIN=http://localhost:5173
 ```
 
@@ -55,7 +71,7 @@ For Vercel, add the same variables in the project settings. `VITE_CLERK_PUBLISHA
 bun install
 ```
 
-The repo uses a Bun workspace, so the root install covers both the server and the frontend.
+The repo uses a Bun workspace, so the root install covers the server, frontend, and shared packages.
 
 ## Database
 
@@ -111,6 +127,8 @@ Recommended Vercel environment variables:
 
 ## Notes
 
-- API key create/update payloads are now validated server-side.
+- API key create/update payloads are validated server-side.
 - `usageLimit=0` is treated as a real limit instead of being silently ignored.
 - Database migration is no longer coupled to the build step.
+- The server uses a layered architecture with separate controllers, services, and validators.
+- Shared types live in `packages/shared` and are consumed by both frontend and backend.

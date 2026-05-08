@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 
-import Modal from '../../../components/Modal';
-import type { CreateApiKeyPayload } from '../../../types/api-key';
+import Modal from '@/components/ui/Modal';
+import type { CreateApiKeyPayload } from '@/types/api-key';
 import {
     createEmptyNewKeyFormState,
     type NewKeyFormState,
@@ -73,7 +73,6 @@ export default function AddKeyModal({ isOpen, onClose, onSubmit }: AddKeyModalPr
 
     function handleChange(event: ChangeEvent<HTMLInputElement>) {
         const { id, value } = event.target;
-
         setFormState((currentState) => ({
             ...currentState,
             [id]: value,
